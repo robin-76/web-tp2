@@ -1,0 +1,26 @@
+{
+  "name": "web-tp2",
+  "version": "1.0.0",
+  "description": "Utilisation de GraphQL comme système d’interrogation de notre base de données d’annonces immobilières.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www-apps.univ-lehavre.fr/forge/gr161657/web-tp2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-express": "^3.5.0",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "graphql": "^16.0.1",
+    "graphql-scalars": "^1.13.6",
+    "mongoose": "^6.0.13",
+    "nodemon": "^2.0.15"
+  }
+}
