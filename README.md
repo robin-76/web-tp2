@@ -125,7 +125,7 @@ Create a comment :
             }
         }       
 
-Display a comment associated with the ad id :
+Display comments associated with the ad id :
 
     query {
         getComments(adId: "619e4fc2fe6a687f4b3248a5") {

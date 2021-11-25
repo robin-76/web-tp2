@@ -20,13 +20,29 @@ const typeDefs = gql`
         date: Date
     }
 
+    enum type_enum {
+    Sell
+    Location
+    }
+
+    enum publicationStatus_enum {
+    Published
+    Unpublished
+    }
+
+    enum goodStatus_enum {
+    Available
+    Rented
+    Sold
+    }
+
     type Ad {
         id: ID
         author: String
         title: String
-        type: String
-        publicationStatus: String
-        goodStatus: String
+        type: type_enum
+        publicationStatus: publicationStatus_enum
+        goodStatus: goodStatus_enum
         description: String
         price: Float
         firstDate: Date
@@ -38,9 +54,9 @@ const typeDefs = gql`
     input AdInput {
         author: String
         title: String
-        type: String
-        publicationStatus: String
-        goodStatus: String
+        type: type_enum
+        publicationStatus: publicationStatus_enum
+        goodStatus: goodStatus_enum
         description: String
         price: Float
         firstDate: Date
