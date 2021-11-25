@@ -14,6 +14,9 @@ const resolvers = {
         getAllAds: async () => {
             return await Ad.find();
         },
+        getPriceFilterAds: async (_, { min, max }) => {
+            return await Ad.find({price: { '$gte': min, '$lte': max}});
+        },
         getAd: async (_parent, {id}, _context, _info) => {
             return await Ad.findById(id);
         },

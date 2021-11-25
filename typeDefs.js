@@ -84,7 +84,8 @@ const typeDefs = gql`
 
     type Query {
       getAllUsers: [User]  
-      getAllAds: [Ad]  
+      getAllAds: [Ad]
+      getPriceFilterAds(min: Float, max: Float): [Ad]  
       getAd(id: ID): Ad 
       getComments(adId: ID): [Comment]  
     }

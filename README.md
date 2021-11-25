@@ -1,3 +1,4 @@
+
 - Year : M2 IWOCS
 - Subject : WEB
 - TP : n°2
@@ -61,7 +62,7 @@ Creation of an ad :
     mutation {
         createAd(AdInput: {
             author: "Robin"
-            title: "Ceci est une nouvelle annonce 3"
+            title: "Ceci est une annonce"
             type: Sell
             publicationStatus: Published
             goodStatus: Rented
@@ -107,6 +108,25 @@ List of all ads :
             }
         }
 
+Ads price filter :
+
+    query {
+        getPriceFilterAds(min:1500, max:2000) {
+            id
+            author
+            title
+            type
+            publicationStatus
+            goodStatus
+            description
+            price
+            firstDate
+            secondDate
+            photos
+            comments
+            }
+        }        
+
 Create a comment :
 
     mutation {
@@ -122,20 +142,9 @@ Create a comment :
             agent
             date
             }
-        }       
+        }              
 
-Display comments associated with the ad id :
-
-    query {
-        getComments(adId: "619e4fc2fe6a687f4b3248a5") {
-            author
-            text
-            agent
-            date
-            }
-        }         
-
-Display an ad according to its id :
+Display an ad and his comments according to its id :
 
     query {
         getAd(id: "619cbf57b7facb4b075bcc2e") {
@@ -149,21 +158,21 @@ Display an ad according to its id :
             firstDate
             secondDate
             photos
-            comments
             }
-        }       
-
-Delete an ad according to its id :
-
-    mutation {
-        deleteAd(id: "619d08781b2e49341532ea59")
-        }   
+        getComments(adId: "619cbf57b7facb4b075bcc2e") {
+            author
+            text
+            agent
+            date
+            }    
+        }         
 
 Update an ad according to its id :
 
     mutation {
         updateAd(id: "619d09361b2e49341532ea5d", AdInput: {
             title: "Nouvelle annonce"
+            price: 2000
             }) {
             id
             author
@@ -178,4 +187,10 @@ Update an ad according to its id :
             photos
             comments
             }
-        }              
+        }
+
+Delete an ad according to its id :
+
+    mutation {
+        deleteAd(id: "619d08781b2e49341532ea59")
+        }                       
