@@ -1,4 +1,3 @@
-
 - Year : M2 IWOCS
 - Subject : WEB
 - TP : n°2
@@ -63,9 +62,9 @@ Creation of an ad :
         createAd(AdInput: {
             author: "Robin"
             title: "Ceci est une nouvelle annonce 3"
-            type: "Sell"
-            publicationStatus: "Published"
-            goodStatus: "Rented"
+            type: Sell
+            publicationStatus: Published
+            goodStatus: Rented
             description: "Ceci est une description"
             price: 200
             firstDate: "2021-11-25"
