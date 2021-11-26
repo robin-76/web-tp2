@@ -1,32 +1,26 @@
 const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
-const typeDefs = require('./typeDefs');
-const resolvers = require('./resolvers');
+const { graphqlHTTP } = require('express-graphql');
 const mongoose = require('mongoose');
+const config = require('./config/key');
 
-async function startServer() {
-    const app = express()
-    const apolloServer = new ApolloServer({
-        typeDefs,
-        resolvers,
-    });
+const app = express();
 
-    await apolloServer.start();
+const schema = require('./graphql/schema');
+const resolvers = require('./graphql/resolvers');
 
-    apolloServer.applyMiddleware({ app: app });
+app.use('/graphql', graphqlHTTP({
+    schema,
+    rootValue: resolvers,
+    graphiql: true
+  }));
 
-    app.use((_req, res) => {
-        res.send('Hello from express apollo server');
-    })
+mongoose.connect(config.MONGO_URI, { useNewUrlParser: true }, (err) => {
+    if (err)
+        console.log(err.message);
+    else
+        console.log('MongoDB Successfully Connected ...');
+});
 
-    await mongoose.connect('mongodb://localhost:27017/LeBonLogement', {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-    });
-    console.log('Mongoose connected...');
-    
-    const server = app.listen(4000, () => {
-        console.log(`Express is running on port ${server.address().port}`);
-    });    
-}
-startServer();
+  const server = app.listen(process.env.PORT || 4000, () => {
+    console.log(`Now browse to localhost:${server.address().port}/graphql`);
+  });

@@ -1,5 +1,5 @@
-require('./models/User');
-require('./models/Ad');
+require('../models/User');
+require('../models/Ad');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
@@ -7,53 +7,51 @@ const Ad = mongoose.model('Ad');
 const Comment = mongoose.model('Comment');
 
 const resolvers = {
-    Query: {
         getAllUsers: async () => {
             return await User.find();
         },
         getAllAds: async () => {
             return await Ad.find();
         },
-        getPriceFilterAds: async (_, { min, max }) => {
-            return await Ad.find({price: { '$gte': min, '$lte': max}});
+        getPriceFilterAds: async (args) => {
+            return await Ad.find({price: { '$gte': args.min, '$lte': args.max}});
         },
-        getAd: async (_parent, {id}, _context, _info) => {
-            return await Ad.findById(id);
+        getAd: async (args) => {
+            return await Ad.findById(args.id).catch(err => err);
         },
-        getComments: async (_parent, {adId}, _context, _info) => {
-            return await Comment.find({ad: adId});
+        getComments: async (args) => {
+            return await Comment.find({ad: args.adId});
         },
-    },
-    Mutation: {
-        createUser: async (_, { UserInput }) => {
-            const usernameExist = await User.findOne({username: UserInput.username});
+
+        createUser: async (args) => {
+            const usernameExist = await User.findOne({username: args.UserInput.username});
             if(usernameExist) throw new Error("Username already exists");
 
-            const emailExist = await User.findOne({email: UserInput.email});
+            const emailExist = await User.findOne({email: args.UserInput.email});
             if(emailExist) throw new Error("Email already exists");
 
             const salt = await bcrypt.genSalt(10);
-            UserInput.password = await bcrypt.hash(UserInput.password, salt);
+            args.UserInput.password = await bcrypt.hash(args.UserInput.password, salt);
 
-            const user = await User.create(UserInput);
+            const user = await User.create(args.UserInput);
             await user.save();
             return user;
         },
-        createAd: async (_, { AdInput }) => {
-            const ad = await Ad.create(AdInput);
+        createAd: async (args) => {
+            const ad = await Ad.create(args.AdInput);
             await ad.save();
             return ad;
         },
-        createComment: async (_, { adId, CommentInput }) => {
-            const ad = await Ad.findById(adId).populate('comments');
+        createComment: async (args) => {
+            const ad = await Ad.findById(args.adId).populate('comments');
             let tabComments = ad.comments;
             
-            const comment = await Comment.create(CommentInput);
-            comment.ad = adId
+            const comment = await Comment.create(args.CommentInput);
+            comment.ad = args.adId
 
             tabComments.push(comment);
 
-            await Ad.updateOne({_id: adId},{$set: {
+            await Ad.updateOne({_id: args.adId},{$set: {
                 comments: tabComments
             }}
         );
@@ -61,13 +59,7 @@ const resolvers = {
             await comment.save();
             return comment;
           },
-        deleteAd: async(_parent, args, _context, _info) => {
-            const { id } = args;
-            await Ad.findByIdAndDelete(id);
-            await Comment.deleteMany({ ad: id });
-            return 'Ad deleted !';
-        },
-        updateAd: async(_parent, args, _context, _info) => {
+        updateAd: async(args) => {
             const { id } = args;
             const { author, title, type, publicationStatus, goodStatus, description, price, firstDate, secondDate, photos } = args.AdInput;
             const updates = {};
@@ -85,8 +77,13 @@ const resolvers = {
                    
             const ad = await Ad.findByIdAndUpdate(id, updates, {new: true});
             return ad;
+        },  
+        deleteAd: async(args) => {
+            const { id } = args;
+            await Ad.findByIdAndDelete(id);
+            await Comment.deleteMany({ ad: id });
+            return 'Ad deleted !';
         },
-    },    
 };
 
 module.exports = resolvers;

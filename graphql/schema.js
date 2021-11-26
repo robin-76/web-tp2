@@ -1,6 +1,6 @@
-const { gql } = require('apollo-server-express');
+const { buildSchema } = require('graphql');
 
-const typeDefs = gql`
+const schema = buildSchema(`
     scalar Date
 
     type User {
@@ -21,19 +21,19 @@ const typeDefs = gql`
     }
 
     enum type_enum {
-    Sell
-    Location
+        Sell
+        Location
     }
 
     enum publicationStatus_enum {
-    Published
-    Unpublished
+        Published
+        Unpublished
     }
 
     enum goodStatus_enum {
-    Available
-    Rented
-    Sold
+        Available
+        Rented
+        Sold
     }
 
     type Ad {
@@ -83,20 +83,20 @@ const typeDefs = gql`
     }
 
     type Query {
-      getAllUsers: [User]  
-      getAllAds: [Ad]
-      getPriceFilterAds(min: Float, max: Float): [Ad]  
-      getAd(id: ID): Ad 
-      getComments(adId: ID): [Comment]  
+        getAllUsers: [User]  
+        getAllAds: [Ad]
+        getPriceFilterAds(min: Float, max: Float): [Ad]  
+        getAd(id: ID): Ad 
+        getComments(adId: ID): [Comment]  
     }
 
     type Mutation {
         createUser(UserInput: UserInput): User
         createAd(AdInput: AdInput): Ad
         createComment(adId: ID, CommentInput: CommentInput): Comment
-        deleteAd(id: ID): String
         updateAd(id: ID, AdInput: AdInput): Ad
+        deleteAd(id: ID): String
     }
-`;
+`);
 
-module.exports = typeDefs;
+module.exports = schema;
