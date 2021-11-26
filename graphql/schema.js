@@ -82,6 +82,13 @@ const schema = buildSchema(`
         ad: ID
     }
 
+    type Order {
+        id: ID!
+        clientId: ID!
+        description: String!
+        delivered: Boolean!
+      }
+
     type Query {
         getAllUsers: [User]  
         getAllAds: [Ad]
@@ -92,6 +99,8 @@ const schema = buildSchema(`
 
     type Mutation {
         createUser(UserInput: UserInput): User
+        login(UserInput: UserInput): String
+        logout: String
         createAd(AdInput: AdInput): Ad
         createComment(adId: ID, CommentInput: CommentInput): Comment
         updateAd(id: ID, AdInput: AdInput): Ad

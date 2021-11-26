@@ -57,6 +57,21 @@ List of all users :
             }
         }
 
+Login :
+
+    mutation {
+        login(UserInput: {
+            username: "robin76"
+            password: "123abc"
+            })
+        }
+
+Logout :
+
+   mutation {
+        logout
+        }            
+
 Creation of an ad :
 
     mutation {

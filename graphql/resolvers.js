@@ -7,6 +7,7 @@ const Ad = mongoose.model('Ad');
 const Comment = mongoose.model('Comment');
 
 const resolvers = {
+        // Query
         getAllUsers: async () => {
             return await User.find();
         },
@@ -17,12 +18,13 @@ const resolvers = {
             return await Ad.find({price: { '$gte': args.min, '$lte': args.max}});
         },
         getAd: async (args) => {
-            return await Ad.findById(args.id).catch(err => err);
+            return await Ad.findById(args.id);
         },
         getComments: async (args) => {
             return await Comment.find({ad: args.adId});
         },
 
+        // Mutation
         createUser: async (args) => {
             const usernameExist = await User.findOne({username: args.UserInput.username});
             if(usernameExist) throw new Error("Username already exists");
@@ -37,6 +39,35 @@ const resolvers = {
             await user.save();
             return user;
         },
+        login: async (args, context) => {
+          //  console.log(context.session);
+            const user = await User.findOne({username: args.UserInput.username});
+
+            // Checking if password is correct
+            if(!user) throw new Error("User is not found");
+                
+            // Checking if password is correct
+            const validPass = await bcrypt.compare(args.UserInput.password, user.password);
+            if(!validPass) throw new Error("Invalid password");
+    
+            // Expires after 1 hour
+            context.session.cookie.expires = new Date(Date.now() + 3600000);
+
+            context.session.agent = !!user.agent;
+            context.session.username = user.username;  
+            context.session.isAuth = true;
+
+            return (user.username + " connected !");
+        },
+        logout: async (_args, context) => {
+            const username = context.session.username
+
+            if(username!=undefined){
+                await context.session.destroy();
+                return (username + " Diconnected !");
+            }
+            else return ("No user connected !");
+          },
         createAd: async (args) => {
             const ad = await Ad.create(args.AdInput);
             await ad.save();

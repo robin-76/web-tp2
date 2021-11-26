@@ -1,18 +1,13 @@
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const mongoose = require('mongoose');
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 const config = require('./config/key');
-
-const app = express();
-
 const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
 
-app.use('/graphql', graphqlHTTP({
-    schema,
-    rootValue: resolvers,
-    graphiql: true
-  }));
+const app = express();
 
 mongoose.connect(config.MONGO_URI, { useNewUrlParser: true }, (err) => {
     if (err)
@@ -21,6 +16,28 @@ mongoose.connect(config.MONGO_URI, { useNewUrlParser: true }, (err) => {
         console.log('MongoDB Successfully Connected ...');
 });
 
-  const server = app.listen(process.env.PORT || 4000, () => {
-    console.log(`Now browse to localhost:${server.address().port}/graphql`);
-  });
+const store = new MongoDBStore({
+  uri: config.MONGO_URI,
+  collection: "sessions",
+});
+
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
+
+app.use("/graphql", graphqlHTTP( req => ({
+    schema,
+    rootValue: resolvers,
+    context: { session: req.session },
+    graphiql: true
+  }))
+);
+
+const server = app.listen(process.env.PORT || 4000, () => {
+  console.log(`Now browse to localhost:${server.address().port}/graphql`);
+});
