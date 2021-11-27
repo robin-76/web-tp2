@@ -4,12 +4,12 @@ const schema = buildSchema(`
     scalar Date
 
     type User {
-        id: ID
-        username: String
-        email: String
-        password: String
-        agent: Boolean
-        date: Date
+        id: ID!
+        username: String!
+        email: String!
+        password: String!
+        agent: Boolean!
+        date: Date!
     }
 
     input UserInput {
@@ -37,16 +37,16 @@ const schema = buildSchema(`
     }
 
     type Ad {
-        id: ID
-        author: String
-        title: String
-        type: type_enum
-        publicationStatus: publicationStatus_enum
-        goodStatus: goodStatus_enum
-        description: String
-        price: Float
-        firstDate: Date
-        secondDate: Date
+        id: ID!
+        author: String!
+        title: String!
+        type: type_enum!
+        publicationStatus: publicationStatus_enum!
+        goodStatus: goodStatus_enum!
+        description: String!
+        price: Float!
+        firstDate: Date!
+        secondDate: Date!
         photos: [String]
         comments: [ID]
     }
@@ -66,12 +66,12 @@ const schema = buildSchema(`
     }
 
     type Comment {
-        id: ID
-        author: String
-        text: String
-        agent: Boolean
-        date: Date
-        ad: ID
+        id: ID!
+        author: String!
+        text: String!
+        agent: Boolean!
+        date: Date!
+        ad: ID!
     }
 
     input CommentInput {
@@ -81,13 +81,6 @@ const schema = buildSchema(`
         date: Date
         ad: ID
     }
-
-    type Order {
-        id: ID!
-        clientId: ID!
-        description: String!
-        delivered: Boolean!
-      }
 
     type Query {
         getAllUsers: [User]  
@@ -99,7 +92,7 @@ const schema = buildSchema(`
 
     type Mutation {
         createUser(UserInput: UserInput): User
-        login(UserInput: UserInput): String
+        login(Username: String, Password: String): String
         logout: String
         createAd(AdInput: AdInput): Ad
         createComment(adId: ID, CommentInput: CommentInput): Comment

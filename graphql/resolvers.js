@@ -8,7 +8,8 @@ const Comment = mongoose.model('Comment');
 
 const resolvers = {
         // Query
-        getAllUsers: async () => {
+        getAllUsers: async (_args, context) => {
+            context.auth(context);
             return await User.find();
         },
         getAllAds: async () => {
@@ -18,10 +19,14 @@ const resolvers = {
             return await Ad.find({price: { '$gte': args.min, '$lte': args.max}});
         },
         getAd: async (args) => {
-            return await Ad.findById(args.id);
+            const ad = await Ad.findById(args.id);
+            if(!ad) throw new Error("Invalid ID !");
+            return ad;
         },
         getComments: async (args) => {
-            return await Comment.find({ad: args.adId});
+            const comments = await Comment.find({ad: args.adId});
+            if(!comments) throw new Error("Invalid ID !");
+            return comments;
         },
 
         // Mutation
@@ -40,14 +45,13 @@ const resolvers = {
             return user;
         },
         login: async (args, context) => {
-          //  console.log(context.session);
-            const user = await User.findOne({username: args.UserInput.username});
+            const user = await User.findOne({username: args.Username});
 
             // Checking if password is correct
             if(!user) throw new Error("User is not found");
                 
             // Checking if password is correct
-            const validPass = await bcrypt.compare(args.UserInput.password, user.password);
+            const validPass = await bcrypt.compare(args.Password, user.password);
             if(!validPass) throw new Error("Invalid password");
     
             // Expires after 1 hour
@@ -68,13 +72,16 @@ const resolvers = {
             }
             else return ("No user connected !");
           },
-        createAd: async (args) => {
+        createAd: async (args, context) => {
+            context.auth(context);
+
             const ad = await Ad.create(args.AdInput);
             await ad.save();
             return ad;
         },
         createComment: async (args) => {
             const ad = await Ad.findById(args.adId).populate('comments');
+            if(!ad) throw new Error("Invalid ID !");
             let tabComments = ad.comments;
             
             const comment = await Comment.create(args.CommentInput);
@@ -90,7 +97,9 @@ const resolvers = {
             await comment.save();
             return comment;
           },
-        updateAd: async(args) => {
+        updateAd: async(args, context) => {
+            context.auth(context);
+
             const { id } = args;
             const { author, title, type, publicationStatus, goodStatus, description, price, firstDate, secondDate, photos } = args.AdInput;
             const updates = {};
@@ -107,11 +116,15 @@ const resolvers = {
             if (photos !== undefined) updates.photos = photos;
                    
             const ad = await Ad.findByIdAndUpdate(id, updates, {new: true});
+            if(!ad) throw new Error("Invalid ID !");
             return ad;
         },  
-        deleteAd: async(args) => {
+        deleteAd: async(args, context) => {
+            context.auth(context);
+                
             const { id } = args;
-            await Ad.findByIdAndDelete(id);
+            const del = await Ad.findByIdAndDelete(id);
+            if(!del) throw new Error("Invalid ID !");
             await Comment.deleteMany({ ad: id });
             return 'Ad deleted !';
         },

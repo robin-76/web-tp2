@@ -24,7 +24,7 @@ Launch the server :
 
     npm start 
 
-GraphQL URL : http://localhost:4000/graphql
+GraphiQL Interface : http://localhost:4000/graphql
 
 # GraphQL Queries
 
@@ -60,17 +60,14 @@ List of all users :
 Login :
 
     mutation {
-        login(UserInput: {
-            username: "robin76"
-            password: "123abc"
-            })
-        }
+        login(Username: "robin76", Password: "123abc")
+    }
 
 Logout :
 
-   mutation {
+    mutation {
         logout
-        }            
+    }            
 
 Creation of an ad :
 

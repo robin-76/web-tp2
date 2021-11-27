@@ -6,6 +6,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const config = require('./config/key');
 const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
+const auth = require('./auth');
 
 const app = express();
 
@@ -33,7 +34,7 @@ app.use(
 app.use("/graphql", graphqlHTTP( req => ({
     schema,
     rootValue: resolvers,
-    context: { session: req.session },
+    context: { session: req.session, auth: auth },
     graphiql: true
   }))
 );
