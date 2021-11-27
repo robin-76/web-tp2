@@ -4,8 +4,8 @@
   "description": "Utilisation de GraphQL comme système d’interrogation de notre base de données d’annonces immobilières.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

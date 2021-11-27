@@ -34,7 +34,7 @@ app.use(
 app.use("/graphql", graphqlHTTP( req => ({
     schema,
     rootValue: resolvers,
-    context: { session: req.session, auth: auth },
+    context: { session: req.session, auth },
     graphiql: true
   }))
 );
