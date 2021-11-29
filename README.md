@@ -5,14 +5,14 @@
 
 ## Author(s)
 
-|Nom|Prénom|
+|Name|First Name|
 |--|--|
 | *Guyomar* | *Robin*|
 | *Bourgeaux* | *Maxence*|
 
 # Description
 
-Using GraphQL as a query system for our real estate listings database.
+Using GraphiQL as a query system for our real estate listings database.
 
 # Commands to launch the server
 
@@ -24,7 +24,7 @@ Launch the server :
 
     npm start 
 
-GraphiQL Interface : http://localhost:4000/graphql
+GraphQL Interface : http://localhost:4000/graphql
 
 # GraphQL Queries
 
@@ -32,18 +32,18 @@ Create an user :
 
     mutation {
         createUser(UserInput: {
-            username: "robin76"
-            email: "robinguyomar@gmail.com"
-            password: "123abc"
+            username: "robin76", 
+            email: "robinguyomar@gmail.com", 
+            password: "123abc", 
             agent: true
-            }) {	
+        }) {
             username
             email
             password
             agent
             date
-            }
         }
+    }
 
 List of all users :
 
@@ -54,8 +54,8 @@ List of all users :
             password
             agent
             date
-            }
         }
+    }
 
 Login :
 
@@ -67,26 +67,22 @@ Logout :
 
     mutation {
         logout
-    }            
+    }           
 
 Creation of an ad :
 
     mutation {
         createAd(AdInput: {
-            author: "Robin"
-            title: "Ceci est une annonce"
-            type: Sell
-            publicationStatus: Published
-            goodStatus: Rented
-            description: "Ceci est une description"
-            price: 200
-            firstDate: "2021-11-25"
-            secondDate: "2021-11-30"
-            photos: [
-                "test_ad1.jpeg",
-                "test_ad2.jpeg"
-                ]
-            }) {	
+            author: "Robin", 
+            title: "Ceci est une annonce", 
+            type: Sell, 
+            publicationStatus: Published, 
+            goodStatus: Rented, 
+            description: "Ceci est une description", 
+            price: 200, firstDate: "2021-11-25", 
+            secondDate: "2021-11-30", 
+            photos: ["test_ad1.jpeg", "test_ad2.jpeg"]
+        }) {
             id
             author
             title
@@ -98,8 +94,9 @@ Creation of an ad :
             firstDate
             secondDate
             photos
-            }
         }
+    }
+
 
 List of all ads :
 
@@ -117,8 +114,8 @@ List of all ads :
             secondDate
             photos
             comments
-            }
         }
+    }
 
 Ads price filter :
 
@@ -136,30 +133,30 @@ Ads price filter :
             secondDate
             photos
             comments
-            }
-        }        
+        }
+    }        
 
 Create a comment :
-
+    
     mutation {
-        createComment(adId : "619e4fc2fe6a687f4b3248a5",
-        CommentInput: {
-            author: "Robin"
-            text: "Commentaire ahah"
+        createComment(adId: "61a4d94589730c586fb727ec", CommentInput: {
+            author: "Robin", 
+            text: "Commentaire ahah", 
             agent: true
-            }) {	
+        }) {
             id
             author
             text
             agent
             date
-            }
-        }              
+        }
+    }
+
 
 Display an ad and his comments according to its id :
 
     query {
-        getAd(id: "619cbf57b7facb4b075bcc2e") {
+        getAd(id: "61a4d94589730c586fb727ec") {
             author
             title
             type
@@ -170,22 +167,22 @@ Display an ad and his comments according to its id :
             firstDate
             secondDate
             photos
-            }
-        getComments(adId: "619cbf57b7facb4b075bcc2e") {
+        }
+        getComments(adId: "61a4d94589730c586fb727ec") {
             author
             text
             agent
             date
-            }    
-        }         
+        }
+    } 
 
 Update an ad according to its id :
 
     mutation {
-        updateAd(id: "619d09361b2e49341532ea5d", AdInput: {
-            title: "Nouvelle annonce"
+        updateAd(id: "61a4d94589730c586fb727ec", AdInput: {
+            title: "Nouvelle annonce", 
             price: 2000
-            }) {
+        }) {
             id
             author
             title
@@ -198,11 +195,11 @@ Update an ad according to its id :
             secondDate
             photos
             comments
-            }
-        }
+        } 
+    }
 
 Delete an ad according to its id :
 
     mutation {
-        deleteAd(id: "619d08781b2e49341532ea59")
-        }                       
+        deleteAd(id: "61a4d94589730c586fb727ec")
+    }                      

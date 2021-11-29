@@ -7,8 +7,11 @@ const config = require('./config/key');
 const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
 const auth = require('./auth');
+const bodyParser = require("express");
 
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 mongoose.connect(config.MONGO_URI, { useNewUrlParser: true }, (err) => {
     if (err)
@@ -42,3 +45,5 @@ app.use("/graphql", graphqlHTTP( req => ({
 const server = app.listen(process.env.PORT || 4000, () => {
   console.log(`Now browse to localhost:${server.address().port}/graphql`);
 });
+
+module.exports = { app }
