@@ -162,7 +162,7 @@ describe('Log in', () => {
     `
     }
 
-    it('Returns the user logged', (done) => {
+    it('Returns the agent logged', (done) => {
         request
             .post('/graphql')
             .send(login)
@@ -314,7 +314,7 @@ describe('Log out', () => {
     `
     }
 
-    it('Returns the user logged out', (done) => {
+    it('Returns the agent logged out', (done) => {
         request
             .post('/graphql')
             .set('cookie', cookie)
