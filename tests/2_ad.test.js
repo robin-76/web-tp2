@@ -254,7 +254,6 @@ describe('Get all the ads', () => {
     it('Returns all the ads', (done) => {
         request
             .post('/graphql')
-            .set('cookie', cookie)
             .send(allAds)
             .expect(200)
             .end((err, res) => {
@@ -309,12 +308,61 @@ describe('Get all the ads', () => {
     })
 });
 
+describe('Get all ad with a price filter', () => {
+    const priceFilter = {
+        query: `
+        query {
+            getPriceFilterAds(min:50, max:150) {
+                id
+                author
+                title
+                type
+                publicationStatus
+                goodStatus
+                description
+                price
+                firstDate
+                secondDate
+                photos
+                comments
+            }
+        }        
+    `
+    }
 
-
-
-
-
-
+    it('Returns all the ad between the min and max of the price filter', (done) => {
+        request
+            .post('/graphql')
+            .send(priceFilter)
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                assert.that(res.body.data.getPriceFilterAds[0].author).is.ofType('string');
+                assert.that(res.body.data.getPriceFilterAds[0].author).is.equalTo('Maxence');
+                assert.that(res.body.data.getPriceFilterAds[0].title).is.ofType('string');
+                assert.that(res.body.data.getPriceFilterAds[0].title).is.equalTo('Deuxième annonce');
+                assert.that(res.body.data.getPriceFilterAds[0].type).is.ofType('string');
+                assert.that(res.body.data.getPriceFilterAds[0].type).is.equalTo('Location');
+                assert.that(res.body.data.getPriceFilterAds[0].publicationStatus).is.ofType('string');
+                assert.that(res.body.data.getPriceFilterAds[0].publicationStatus).is.equalTo('Published');
+                assert.that(res.body.data.getPriceFilterAds[0].goodStatus).is.ofType('string');
+                assert.that(res.body.data.getPriceFilterAds[0].goodStatus).is.equalTo('Rented');
+                assert.that(res.body.data.getPriceFilterAds[0].description).is.ofType('string');
+                assert.that(res.body.data.getPriceFilterAds[0].description).is.equalTo('Deuxième description');
+                assert.that(res.body.data.getPriceFilterAds[0].price).is.ofType('number');
+                assert.that(res.body.data.getPriceFilterAds[0].price).is.equalTo(100);
+                assert.that(res.body.data.getPriceFilterAds[0].firstDate).is.ofType('string');
+                assert.that(res.body.data.getPriceFilterAds[0].firstDate).is.equalTo('2021-11-26T00:00:00.000Z');
+                assert.that(res.body.data.getPriceFilterAds[0].secondDate).is.ofType('string');
+                assert.that(res.body.data.getPriceFilterAds[0].secondDate).is.equalTo('2021-11-29T00:00:00.000Z');
+                assert.that(res.body.data.getPriceFilterAds[0].photos).is.ofType('array');
+                assert.that(res.body.data.getPriceFilterAds[0].photos).is.empty();
+                assert.that(res.body.data.getPriceFilterAds[0].comments).is.empty();
+                done();
+            })
+    })
+});
 
 let cookie2;
 
