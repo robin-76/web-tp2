@@ -68,9 +68,9 @@ const resolvers = {
 
         if(username !== undefined) {
             await context.session.destroy();
-            return (username + " Diconnected !");
+            return (username + " disconnected !");
         }
-        else return ("No user connected !");
+        else throw new Error("No user connected !");
     },
     createAd: async (args, context) => {
         context.auth(context);
