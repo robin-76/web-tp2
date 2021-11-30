@@ -43,9 +43,7 @@ describe('createUser', () => {
                 done();
             })
     })
-});
 
-describe('createUser', () => {
     const userAgent = {
         query: `
         mutation {
@@ -83,9 +81,7 @@ describe('createUser', () => {
                 done();
             })
     })
-});
 
-describe('createUser already exists', () => {
     const user2 = {
         query: `
         mutation {
@@ -93,7 +89,7 @@ describe('createUser already exists', () => {
                 username: "robin", 
                 email: "robinguyomar@gmail.com", 
                 password: "123abc", 
-                agent: true
+                agent: false
             }) {
                 username
                 email
@@ -126,7 +122,7 @@ describe('Log in', () => {
     const login = {
         query: `
         mutation {
-            login(Username: "robin76", Password: "123abc")
+            login(Username: "agent76", Password: "123abc")
         }
     `
     }
@@ -140,13 +136,11 @@ describe('Log in', () => {
                 if (err)
                     return done(res, err);
                 cookie = res.headers['set-cookie'];
-                assert.that(res.body.data.login).is.equalTo("robin76 connected !");
+                assert.that(res.body.data.login).is.equalTo("agent76 connected !");
                 done();
             })
     })
-});
 
-describe('Log in incorrect', () => {
     const login2 = {
         query: `
         mutation {
@@ -172,6 +166,56 @@ describe('Log in incorrect', () => {
     })
 });
 
+describe('Get all the users', () => {
+    const allUsers = {
+        query: `
+        query {
+            getAllUsers {
+                username
+                email
+                password
+                agent
+                date
+            }
+        }
+    `
+    }
+
+    it('Returns all the users', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie)
+            .send(allUsers)
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                assert.that(res.body.data.getAllUsers[0].username).is.equalTo("robin76");
+                assert.that(res.body.data.getAllUsers[0].email).is.equalTo("robinguyomar@gmail.com");
+                assert.that(res.body.data.getAllUsers[0].agent).is.equalTo(false);
+
+                assert.that(res.body.data.getAllUsers[1].username).is.equalTo("agent76");
+                assert.that(res.body.data.getAllUsers[1].email).is.equalTo("agent@gmail.com");
+                assert.that(res.body.data.getAllUsers[1].agent).is.equalTo(true);
+                done();
+            })
+    })
+
+    it('Returns an error', (done) => {
+        request
+            .post('/graphql')
+            .send(allUsers)
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                if(res.body.errors[0].message.includes('login'))
+                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                done();
+            })
+    })
+});
+
 describe('Log out', () => {
     const logout = {
         query: `
@@ -190,25 +234,15 @@ describe('Log out', () => {
             .end((err, res) => {
                 if (err)
                     return done(res, err);
-                assert.that(res.body.data.logout).is.equalTo("robin76 disconnected !");
+                assert.that(res.body.data.logout).is.equalTo("agent76 disconnected !");
                 done();
             })
     })
-});
-
-describe('Log out incorrect', () => {
-    const logout2 = {
-        query: `
-        mutation {
-            logout
-        }  
-    `
-    }
 
     it('Returns an error', (done) => {
         request
             .post('/graphql')
-            .send(logout2)
+            .send(logout)
             .expect(200)
             .end((err, res) => {
                 if (err)
