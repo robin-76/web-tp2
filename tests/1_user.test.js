@@ -101,7 +101,7 @@ describe('createUser', () => {
     `
     }
 
-    it('Returns an error', (done) => {
+    it('Returns an already exists error', (done) => {
         request
             .post('/graphql')
             .send(user2)
@@ -113,6 +113,41 @@ describe('createUser', () => {
                     assert.that(res.body.errors[0].message).is.equalTo('Username already exists');
                 if(res.body.errors[0].message.includes('Email'))
                     assert.that(res.body.errors[0].message).is.equalTo('Email already exists');
+                done();
+            })
+    })
+
+    const user3 = {
+        query: `
+        mutation {
+            createUser(UserInput: {
+                password: "123abc", 
+                agent: false
+            }) {
+                username
+                email
+                password
+                agent
+                date
+            }
+        }
+    `
+    }
+
+    it('Returns a validation error', (done) => {
+        request
+            .post('/graphql')
+            .send(user3)
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                if(res.body.errors[0].message.includes('Username'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Username already exists');
+                if(res.body.errors[0].message.includes('Email'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Email already exists');
+                if(res.body.errors[0].message.includes('validation'))
+                    assert.that(res.body.errors[0].message).is.startingWith('User validation failed:');
                 done();
             })
     })
@@ -149,7 +184,7 @@ describe('Log in', () => {
     `
     }
 
-    it('Returns an error', (done) => {
+    it('Returns a not found user error', (done) => {
         request
             .post('/graphql')
             .send(login2)
@@ -161,6 +196,60 @@ describe('Log in', () => {
                     assert.that(res.body.errors[0].message).is.equalTo('User is not found');
                 if(res.body.errors[0].message.includes('password'))
                     assert.that(res.body.errors[0].message).is.equalTo('Invalid password');
+                if(res.body.errors[0].message.includes('arguments'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Illegal arguments: undefined, string');
+                done();
+            })
+    })
+
+    const login3 = {
+        query: `
+        mutation {
+            login(Username: "robin76", Password: "")
+        }
+    `
+    }
+
+    it('Returns an invalid password error', (done) => {
+        request
+            .post('/graphql')
+            .send(login3)
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                if(res.body.errors[0].message.includes('User'))
+                    assert.that(res.body.errors[0].message).is.equalTo('User is not found');
+                if(res.body.errors[0].message.includes('password'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Invalid password');
+                if(res.body.errors[0].message.includes('arguments'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Illegal arguments: undefined, string');
+                done();
+            })
+    })
+
+    const login4 = {
+        query: `
+        mutation {
+            login(Username: "robin76")
+        }
+    `
+    }
+
+    it('Returns an illegal arguments error', (done) => {
+        request
+            .post('/graphql')
+            .send(login4)
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                if(res.body.errors[0].message.includes('User'))
+                    assert.that(res.body.errors[0].message).is.equalTo('User is not found');
+                if(res.body.errors[0].message.includes('password'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Invalid password');
+                if(res.body.errors[0].message.includes('arguments'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Illegal arguments: undefined, string');
                 done();
             })
     })
@@ -201,7 +290,7 @@ describe('Get all the users', () => {
             })
     })
 
-    it('Returns an error', (done) => {
+    it('Returns a login error', (done) => {
         request
             .post('/graphql')
             .send(allUsers)
@@ -209,7 +298,7 @@ describe('Get all the users', () => {
             .end((err, res) => {
                 if (err)
                     return done(res, err);
-                if(res.body.errors[0].message.includes('login'))
+                if(res.body.errors[0].message)
                     assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
                 done();
             })
@@ -239,7 +328,7 @@ describe('Log out', () => {
             })
     })
 
-    it('Returns an error', (done) => {
+    it('Returns a connection error', (done) => {
         request
             .post('/graphql')
             .send(logout)
@@ -247,7 +336,7 @@ describe('Log out', () => {
             .end((err, res) => {
                 if (err)
                     return done(res, err);
-                if(res.body.errors[0].message.includes('user'))
+                if(res.body.errors[0].message)
                     assert.that(res.body.errors[0].message).is.equalTo('No user connected !');
                 done();
             })

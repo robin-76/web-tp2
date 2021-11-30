@@ -28,6 +28,8 @@ GraphQL Interface : http://localhost:4000/graphql
 
 # GraphQL Queries
 
+## Users
+
 Create an user :
 
     mutation {
@@ -69,6 +71,8 @@ Logout :
         logout
     }           
 
+## Ads
+
 Creation of an ad :
 
     mutation {
@@ -79,7 +83,8 @@ Creation of an ad :
             publicationStatus: Published, 
             goodStatus: Rented, 
             description: "Ceci est une description", 
-            price: 200, firstDate: "2021-11-25", 
+            price: 200, 
+            firstDate: "2021-11-25", 
             secondDate: "2021-11-30", 
             photos: ["test_ad1.jpeg", "test_ad2.jpeg"]
         }) {
