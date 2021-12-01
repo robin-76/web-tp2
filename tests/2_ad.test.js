@@ -17,7 +17,7 @@ describe('Log in an agent to manipulate the ads', () => {
             .send({query:`mutation {login(Username: "agent76", Password: "123abc")}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 cookie = res.headers['set-cookie'];
                 assert.that(res.body.data.login).is.equalTo("agent76 connected !");
@@ -37,7 +37,7 @@ describe('createAd', () => {
                 id author title type publicationStatus goodStatus description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 id = res.body.data.createAd.id;
                 assert.that(res.body.data.createAd.author).is.ofType('string');
@@ -75,7 +75,7 @@ describe('createAd', () => {
                 description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.createAd.author).is.ofType('string');
                 assert.that(res.body.data.createAd.author).is.equalTo('Maxence');
@@ -108,17 +108,11 @@ describe('createAd', () => {
                 id author title type publicationStatus goodStatus description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                // When the user is not an agent
-                if(res.body.errors[0].message.includes('Unauthorized'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
                 // When the user is not logged in
                 if(res.body.errors[0].message.includes('login'))
                     assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
-                // When the ad is not 100% correct
-                if(res.body.errors[0].message.includes('validation'))
-                    assert.that(res.body.errors[0].message).is.startingWith('Ad validation failed:');
                 done();
             })
     })
@@ -132,14 +126,8 @@ describe('createAd', () => {
                 publicationStatus goodStatus description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                // When the user is not an agent
-                if(res.body.errors[0].message.includes('Unauthorized'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
-                // When the user is not logged in
-                if(res.body.errors[0].message.includes('login'))
-                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
                 // When the ad is not 100% correct
                 if(res.body.errors[0].message.includes('validation'))
                     assert.that(res.body.errors[0].message).is.startingWith('Ad validation failed:');
@@ -157,7 +145,7 @@ describe('createComment', () => {
                 agent: true }) { id author text agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.createComment.author).is.ofType('string');
                 assert.that(res.body.data.createComment.author).is.equalTo('Robin');
@@ -177,7 +165,7 @@ describe('createComment', () => {
                 agent: true }) { id author text agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 // When the user is not logged in
                 if(res.body.errors[0].message.includes('login'))
@@ -195,7 +183,7 @@ describe('Get all the ads', () => {
                 firstDate secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.getAllAds[0].author).is.ofType('string');
                 assert.that(res.body.data.getAllAds[0].author).is.equalTo('Robin');
@@ -253,7 +241,7 @@ describe('Get all ad with a price filter', () => {
                 description price firstDate secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.getPriceFilterAds[0].author).is.ofType('string');
                 assert.that(res.body.data.getPriceFilterAds[0].author).is.equalTo('Maxence');
@@ -289,7 +277,7 @@ describe('Get a specific ad with id', () => {
                 price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.getAd.author).is.ofType('string');
                 assert.that(res.body.data.getAd.author).is.equalTo('Robin');
@@ -323,12 +311,10 @@ describe('Get a specific ad with id', () => {
                 description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 if(res.body.errors[0].message.includes("Invalid"))
                     assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
-                if(res.body.errors[0].message.includes("ObjectId"))
-                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
                 done();
             })
     })
@@ -340,10 +326,8 @@ describe('Get a specific ad with id', () => {
                 firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                if(res.body.errors[0].message.includes("Invalid"))
-                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
                 if(res.body.errors[0].message.includes("ObjectId"))
                     assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
                 done();
@@ -358,7 +342,7 @@ describe('Get a specific ad\'s comment(s) with id', () => {
             .send({query:`query { getComments(adId: "${id}") { author text agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.getComments[0].author).is.ofType('string');
                 assert.that(res.body.data.getComments[0].author).is.equalTo('Robin');
@@ -376,7 +360,7 @@ describe('Get a specific ad\'s comment(s) with id', () => {
             .send({query:`query { getComments(adId: "00a0a00000000a0a00aa00a0") { author text agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 if(res.body.data.getComments[0] === undefined)
                     assert.that(res.body.data.getComments).is.empty();
@@ -390,7 +374,7 @@ describe('Get a specific ad\'s comment(s) with id', () => {
             .send({query:`query { getComments(adId: "1234") { author text agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 if(res.body.errors[0].message.includes("ObjectId"))
                     assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
@@ -408,7 +392,7 @@ describe('Modify a specific ad with id', () => {
                 title type publicationStatus goodStatus description price firstDate secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.updateAd.title).is.ofType('string');
                 assert.that(res.body.data.updateAd.title).is.equalTo('Updated ad');
@@ -425,20 +409,11 @@ describe('Modify a specific ad with id', () => {
                 title type publicationStatus goodStatus description price firstDate secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                // When the id has the good format but is incorrect
-                if(res.body.errors[0].message.includes("Invalid"))
-                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
-                // When the user is not an agent
-                if(res.body.errors[0].message.includes('Unauthorized'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
                 // When the user is not logged in
                 if(res.body.errors[0].message.includes('login'))
                     assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
-                // When the id doesn't have the good format
-                if(res.body.errors[0].message.includes("ObjectId"))
-                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
                 done();
             })
     })
@@ -452,20 +427,11 @@ describe('Modify a specific ad with id', () => {
                 secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 // When the id has the good format but is incorrect
                 if(res.body.errors[0].message.includes("Invalid"))
                     assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
-                // When the user is not an agent
-                if(res.body.errors[0].message.includes('Unauthorized'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
-                // When the user is not logged in
-                if(res.body.errors[0].message.includes('login'))
-                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
-                // When the id doesn't have the good format
-                if(res.body.errors[0].message.includes("ObjectId"))
-                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
                 done();
             })
     })
@@ -479,17 +445,8 @@ describe('Modify a specific ad with id', () => {
                 secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                // When the id has the good format but is incorrect
-                if(res.body.errors[0].message.includes("Invalid"))
-                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
-                // When the user is not an agent
-                if(res.body.errors[0].message.includes('Unauthorized'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
-                // When the user is not logged in
-                if(res.body.errors[0].message.includes('login'))
-                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
                 // When the id doesn't have the good format
                 if(res.body.errors[0].message.includes("ObjectId"))
                     assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
@@ -506,7 +463,7 @@ describe('Delete a specific ad with id', () => {
             .send({query:`mutation { deleteAd(id: "${id}") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.deleteAd).is.equalTo('Ad deleted !');
                 done();
@@ -519,20 +476,11 @@ describe('Delete a specific ad with id', () => {
             .send({query:`mutation { deleteAd(id: "${id}") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                // When the id has the good format but is incorrect
-                if(res.body.errors[0].message.includes("Invalid"))
-                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
-                // When the user is not an agent
-                if(res.body.errors[0].message.includes('Unauthorized'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
                 // When the user is not logged in
                 if(res.body.errors[0].message.includes('login'))
                     assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
-                // When the id doesn't have the good format
-                if(res.body.errors[0].message.includes("ObjectId"))
-                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
                 done();
             })
     })
@@ -544,20 +492,11 @@ describe('Delete a specific ad with id', () => {
             .send({query:`mutation { deleteAd(id: "00a0a00000000a0a00aa00a0") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 // When the id has the good format but is incorrect
                 if(res.body.errors[0].message.includes("Invalid"))
                     assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
-                // When the user is not an agent
-                if(res.body.errors[0].message.includes('Unauthorized'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
-                // When the user is not logged in
-                if(res.body.errors[0].message.includes('login'))
-                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
-                // When the id doesn't have the good format
-                if(res.body.errors[0].message.includes("ObjectId"))
-                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
                 done();
             })
     })
@@ -569,17 +508,8 @@ describe('Delete a specific ad with id', () => {
             .send({query:`mutation { deleteAd(id: "1234") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                // When the id has the good format but is incorrect
-                if(res.body.errors[0].message.includes("Invalid"))
-                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
-                // When the user is not an agent
-                if(res.body.errors[0].message.includes('Unauthorized'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
-                // When the user is not logged in
-                if(res.body.errors[0].message.includes('login'))
-                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
                 // When the id doesn't have the good format
                 if(res.body.errors[0].message.includes("ObjectId"))
                     assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
@@ -596,7 +526,7 @@ describe('Log out the agent', () => {
             .send({query:`mutation { logout }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.logout).is.equalTo("agent76 disconnected !");
                 done();
@@ -611,7 +541,7 @@ describe('Log in an user to manipulate the ads', () => {
             .send({query:`mutation { login(Username: "robin76", Password: "123abc") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 cookie2 = res.headers['set-cookie'];
                 assert.that(res.body.data.login).is.equalTo("robin76 connected !");
@@ -631,17 +561,11 @@ describe('Try to create an ad with an user', () => {
                 id author title type publicationStatus goodStatus description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 // When the user is not an agent
                 if(res.body.errors[0].message.includes('Unauthorized'))
                     assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
-                // When the user is not logged in
-                if(res.body.errors[0].message.includes('login'))
-                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
-                // When the ad is not 100% correct
-                if(res.body.errors[0].message.includes('validation'))
-                    assert.that(res.body.errors[0].message).is.startingWith('Ad validation failed:');
                 done();
             })
     })
@@ -656,17 +580,11 @@ describe('Try to modify an ad with an user', () => {
                 title type publicationStatus goodStatus description price firstDate secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                // When the id is incorrect
-                if(res.body.errors[0].message.includes("Invalid"))
-                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
                 // When the user is not an agent
                 if(res.body.errors[0].message.includes('Unauthorized'))
                     assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
-                // When the user is not logged in
-                if(res.body.errors[0].message.includes('login'))
-                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
                 done();
             })
     })
@@ -680,17 +598,11 @@ describe('Try to delete an ad with an user', () => {
             .send({query:`mutation { deleteAd(id: "${id}") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                // When the id is incorrect
-                if(res.body.errors[0].message.includes("Invalid"))
-                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
                 // When the user is not an agent
                 if(res.body.errors[0].message.includes('Unauthorized'))
                     assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
-                // When the user is not logged in
-                if(res.body.errors[0].message.includes('login'))
-                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
                 done();
             })
     })

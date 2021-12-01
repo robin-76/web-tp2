@@ -30,7 +30,7 @@ describe('createUser', () => {
             })
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.createUser.username).is.ofType('string');
                 assert.that(res.body.data.createUser.username).is.equalTo('robin76');
@@ -50,7 +50,7 @@ describe('createUser', () => {
                 password: "123abc", agent: true }) { username email password agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.createUser.username).is.ofType('string');
                 assert.that(res.body.data.createUser.username).is.equalTo('agent76');
@@ -70,7 +70,7 @@ describe('createUser', () => {
                 password: "123abc", agent: false }) { username email password agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 if(res.body.errors[0].message.includes('Username'))
                     assert.that(res.body.errors[0].message).is.equalTo('Username already exists');
@@ -87,12 +87,8 @@ describe('createUser', () => {
                 password agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                if(res.body.errors[0].message.includes('Username'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Username already exists');
-                if(res.body.errors[0].message.includes('Email'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Email already exists');
                 if(res.body.errors[0].message.includes('validation'))
                     assert.that(res.body.errors[0].message).is.startingWith('User validation failed:');
                 done();
@@ -107,7 +103,7 @@ describe('Log in', () => {
             .send({query:`mutation { login(Username: "agent76", Password: "123abc") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 cookie = res.headers['set-cookie'];
                 assert.that(res.body.data.login).is.equalTo("agent76 connected !");
@@ -121,14 +117,10 @@ describe('Log in', () => {
             .send({query:`mutation { login(Username: "rob", Password: "123abc") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 if(res.body.errors[0].message.includes('User'))
                     assert.that(res.body.errors[0].message).is.equalTo('User is not found');
-                if(res.body.errors[0].message.includes('password'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Invalid password');
-                if(res.body.errors[0].message.includes('arguments'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Illegal arguments: undefined, string');
                 done();
             })
     })
@@ -139,14 +131,10 @@ describe('Log in', () => {
             .send({query:`mutation { login(Username: "robin76", Password: "") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                if(res.body.errors[0].message.includes('User'))
-                    assert.that(res.body.errors[0].message).is.equalTo('User is not found');
                 if(res.body.errors[0].message.includes('password'))
                     assert.that(res.body.errors[0].message).is.equalTo('Invalid password');
-                if(res.body.errors[0].message.includes('arguments'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Illegal arguments: undefined, string');
                 done();
             })
     })
@@ -157,12 +145,8 @@ describe('Log in', () => {
             .send({query:`mutation { login(Username: "robin76") }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
-                if(res.body.errors[0].message.includes('User'))
-                    assert.that(res.body.errors[0].message).is.equalTo('User is not found');
-                if(res.body.errors[0].message.includes('password'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Invalid password');
                 if(res.body.errors[0].message.includes('arguments'))
                     assert.that(res.body.errors[0].message).is.equalTo('Illegal arguments: undefined, string');
                 done();
@@ -179,7 +163,7 @@ describe('Get all the users', () => {
             .send({query:`query { getAllUsers { username email password agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.getAllUsers[0].username).is.equalTo("robin76");
                 assert.that(res.body.data.getAllUsers[0].email).is.equalTo("robinguyomar@gmail.com");
@@ -198,7 +182,7 @@ describe('Get all the users', () => {
             .send({query:`query { getAllUsers { username email password agent date }}`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 if(res.body.errors[0].message)
                     assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
@@ -215,7 +199,7 @@ describe('Log out', () => {
             .send({query:`mutation { logout } `})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 assert.that(res.body.data.logout).is.equalTo("agent76 disconnected !");
                 done();
@@ -228,7 +212,7 @@ describe('Log out', () => {
             .send({query:`mutation { logout }`})
             .expect(200)
             .end((err, res) => {
-                if (err)
+                if(err)
                     return done(res, err);
                 if(res.body.errors[0].message)
                     assert.that(res.body.errors[0].message).is.equalTo('No user connected !');
