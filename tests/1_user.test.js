@@ -6,29 +6,27 @@ const { assert } = require('assertthat');
 let cookie;
 
 describe('createUser', () => {
-    const user = {
-        query: `
-        mutation {
-            createUser(UserInput: {
-                username: "robin76", 
-                email: "robinguyomar@gmail.com", 
-                password: "123abc", 
-                agent: false
-            }) {
-                username
-                email
-                password
-                agent
-                date
-            }
-        }
-    `
-    }
-
     it('Returns the user created', (done) => {
         request
             .post('/graphql')
-            .send(user)
+            .send({
+                query: `
+                    mutation {
+                        createUser(UserInput: {
+                            username: "robin76", 
+                            email: "robinguyomar@gmail.com", 
+                            password: "123abc", 
+                            agent: false
+                        }) {
+                            username
+                            email
+                            password
+                            agent
+                            date
+                        }
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -44,29 +42,27 @@ describe('createUser', () => {
             })
     })
 
-    const userAgent = {
-        query: `
-        mutation {
-            createUser(UserInput: {
-                username: "agent76", 
-                email: "agent@gmail.com", 
-                password: "123abc", 
-                agent: true
-            }) {
-                username
-                email
-                password
-                agent
-                date
-            }
-        }
-    `
-    }
-
     it('Returns the agent created', (done) => {
         request
             .post('/graphql')
-            .send(userAgent)
+            .send({
+                query: `
+                    mutation {
+                        createUser(UserInput: {
+                            username: "agent76", 
+                            email: "agent@gmail.com", 
+                            password: "123abc", 
+                            agent: true
+                        }) {
+                            username
+                            email
+                            password
+                            agent
+                            date
+                        }
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -82,29 +78,27 @@ describe('createUser', () => {
             })
     })
 
-    const user2 = {
-        query: `
-        mutation {
-            createUser(UserInput: {
-                username: "robin", 
-                email: "robinguyomar@gmail.com", 
-                password: "123abc", 
-                agent: false
-            }) {
-                username
-                email
-                password
-                agent
-                date
-            }
-        }
-    `
-    }
-
     it('Returns an already exists error', (done) => {
         request
             .post('/graphql')
-            .send(user2)
+            .send({
+                query: `
+                    mutation {
+                        createUser(UserInput: {
+                            username: "robin", 
+                            email: "robinguyomar@gmail.com", 
+                            password: "123abc", 
+                            agent: false
+                        }) {
+                            username
+                            email
+                            password
+                            agent
+                            date
+                        }
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -117,27 +111,25 @@ describe('createUser', () => {
             })
     })
 
-    const user3 = {
-        query: `
-        mutation {
-            createUser(UserInput: {
-                password: "123abc", 
-                agent: false
-            }) {
-                username
-                email
-                password
-                agent
-                date
-            }
-        }
-    `
-    }
-
     it('Returns a validation error', (done) => {
         request
             .post('/graphql')
-            .send(user3)
+            .send({
+                query: `
+                    mutation {
+                        createUser(UserInput: {
+                            password: "123abc", 
+                            agent: false
+                        }) {
+                            username
+                            email
+                            password
+                            agent
+                            date
+                        }
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -154,18 +146,16 @@ describe('createUser', () => {
 });
 
 describe('Log in', () => {
-    const login = {
-        query: `
-        mutation {
-            login(Username: "agent76", Password: "123abc")
-        }
-    `
-    }
-
     it('Returns the agent logged', (done) => {
         request
             .post('/graphql')
-            .send(login)
+            .send({
+                query: `
+                    mutation {
+                        login(Username: "agent76", Password: "123abc")
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -176,18 +166,16 @@ describe('Log in', () => {
             })
     })
 
-    const login2 = {
-        query: `
-        mutation {
-            login(Username: "rob", Password: "123abc")
-        }
-    `
-    }
-
     it('Returns a not found user error', (done) => {
         request
             .post('/graphql')
-            .send(login2)
+            .send({
+                query: `
+                    mutation {
+                        login(Username: "rob", Password: "123abc")
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -201,19 +189,17 @@ describe('Log in', () => {
                 done();
             })
     })
-
-    const login3 = {
-        query: `
-        mutation {
-            login(Username: "robin76", Password: "")
-        }
-    `
-    }
 
     it('Returns an invalid password error', (done) => {
         request
             .post('/graphql')
-            .send(login3)
+            .send({
+                query: `
+                    mutation {
+                        login(Username: "robin76", Password: "")
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -228,18 +214,16 @@ describe('Log in', () => {
             })
     })
 
-    const login4 = {
-        query: `
-        mutation {
-            login(Username: "robin76")
-        }
-    `
-    }
-
     it('Returns an illegal arguments error', (done) => {
         request
             .post('/graphql')
-            .send(login4)
+            .send({
+                query: `
+                    mutation {
+                        login(Username: "robin76")
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -256,25 +240,24 @@ describe('Log in', () => {
 });
 
 describe('Get all the users', () => {
-    const allUsers = {
-        query: `
-        query {
-            getAllUsers {
-                username
-                email
-                password
-                agent
-                date
-            }
-        }
-    `
-    }
 
     it('Returns all the users', (done) => {
         request
             .post('/graphql')
             .set('cookie', cookie)
-            .send(allUsers)
+            .send({
+                query: `
+                    query {
+                        getAllUsers {
+                            username
+                            email
+                            password
+                            agent
+                            date
+                        }
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -293,7 +276,19 @@ describe('Get all the users', () => {
     it('Returns a login error', (done) => {
         request
             .post('/graphql')
-            .send(allUsers)
+            .send({
+                query: `
+                    query {
+                        getAllUsers {
+                            username
+                            email
+                            password
+                            agent
+                            date
+                        }
+                    }
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -306,19 +301,18 @@ describe('Get all the users', () => {
 });
 
 describe('Log out', () => {
-    const logout = {
-        query: `
-        mutation {
-            logout
-        }  
-    `
-    }
 
     it('Returns the agent logged out', (done) => {
         request
             .post('/graphql')
             .set('cookie', cookie)
-            .send(logout)
+            .send({
+                query: `
+                    mutation {
+                        logout
+                    }  
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -331,7 +325,13 @@ describe('Log out', () => {
     it('Returns a connection error', (done) => {
         request
             .post('/graphql')
-            .send(logout)
+            .send({
+                query: `
+                    mutation {
+                        logout
+                    }  
+                `
+            })
             .expect(200)
             .end((err, res) => {
                 if (err)

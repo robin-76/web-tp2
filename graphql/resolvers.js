@@ -79,7 +79,9 @@ const resolvers = {
         await ad.save();
         return ad;
     },
-    createComment: async (args) => {
+    createComment: async (args, context) => {
+        if(!context.session.isAuth) throw new Error("You have to login first !");
+
         const ad = await Ad.findById(args.adId).populate('comments');
         if(!ad) throw new Error("Invalid ID !");
         let tabComments = ad.comments;
