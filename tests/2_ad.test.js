@@ -427,12 +427,162 @@ describe('Modify a specific ad with id', () => {
             .end((err, res) => {
                 if (err)
                     return done(res, err);
+                // When the id has the good format but is incorrect
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
                 // When the user is not an agent
                 if(res.body.errors[0].message.includes('Unauthorized'))
                     assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
                 // When the user is not logged in
                 if(res.body.errors[0].message.includes('login'))
                     assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                // When the id doesn't have the good format
+                if(res.body.errors[0].message.includes("ObjectId"))
+                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
+                done();
+            })
+    })
+
+    it('Returns an ID error', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie)
+            .send({query:`mutation { updateAd(id: "00a0a00000000a0a00aa00a0", AdInput: { title: "Updated ad v2", 
+                price: 1234 }) { id author title type publicationStatus goodStatus description price firstDate 
+                secondDate photos comments }}`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                // When the id has the good format but is incorrect
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
+                // When the user is not an agent
+                if(res.body.errors[0].message.includes('Unauthorized'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
+                // When the user is not logged in
+                if(res.body.errors[0].message.includes('login'))
+                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                // When the id doesn't have the good format
+                if(res.body.errors[0].message.includes("ObjectId"))
+                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
+                done();
+            })
+    })
+
+    it('Returns a cast objectID error', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie)
+            .send({query:`mutation { updateAd(id: "1234", AdInput: { title: "Updated ad v2", 
+                price: 1234 }) { id author title type publicationStatus goodStatus description price firstDate 
+                secondDate photos comments }}`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                // When the id has the good format but is incorrect
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
+                // When the user is not an agent
+                if(res.body.errors[0].message.includes('Unauthorized'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
+                // When the user is not logged in
+                if(res.body.errors[0].message.includes('login'))
+                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                // When the id doesn't have the good format
+                if(res.body.errors[0].message.includes("ObjectId"))
+                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
+                done();
+            })
+    })
+});
+
+describe('Delete a specific ad with id', () => {
+    it('Returns the ad deleted', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie)
+            .send({query:`mutation { deleteAd(id: "${id}") }`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                assert.that(res.body.data.deleteAd).is.equalTo('Ad deleted !');
+                done();
+            })
+    })
+
+    it('Returns a login error', (done) => {
+        request
+            .post('/graphql')
+            .send({query:`mutation { deleteAd(id: "${id}") }`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                // When the id has the good format but is incorrect
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
+                // When the user is not an agent
+                if(res.body.errors[0].message.includes('Unauthorized'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
+                // When the user is not logged in
+                if(res.body.errors[0].message.includes('login'))
+                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                // When the id doesn't have the good format
+                if(res.body.errors[0].message.includes("ObjectId"))
+                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
+                done();
+            })
+    })
+
+    it('Returns an ID error', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie)
+            .send({query:`mutation { deleteAd(id: "00a0a00000000a0a00aa00a0") }`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                // When the id has the good format but is incorrect
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
+                // When the user is not an agent
+                if(res.body.errors[0].message.includes('Unauthorized'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
+                // When the user is not logged in
+                if(res.body.errors[0].message.includes('login'))
+                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                // When the id doesn't have the good format
+                if(res.body.errors[0].message.includes("ObjectId"))
+                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
+                done();
+            })
+    })
+
+    it('Returns a cast objectID error', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie)
+            .send({query:`mutation { deleteAd(id: "1234") }`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                // When the id has the good format but is incorrect
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
+                // When the user is not an agent
+                if(res.body.errors[0].message.includes('Unauthorized'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
+                // When the user is not logged in
+                if(res.body.errors[0].message.includes('login'))
+                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                // When the id doesn't have the good format
+                if(res.body.errors[0].message.includes("ObjectId"))
+                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
                 done();
             })
     })
@@ -508,6 +658,33 @@ describe('Try to modify an ad with an user', () => {
             .end((err, res) => {
                 if (err)
                     return done(res, err);
+                // When the id is incorrect
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
+                // When the user is not an agent
+                if(res.body.errors[0].message.includes('Unauthorized'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
+                // When the user is not logged in
+                if(res.body.errors[0].message.includes('login'))
+                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                done();
+            })
+    })
+});
+
+describe('Try to delete an ad with an user', () => {
+    it('Returns an unauthorized error', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie2)
+            .send({query:`mutation { deleteAd(id: "${id}") }`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                // When the id is incorrect
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
                 // When the user is not an agent
                 if(res.body.errors[0].message.includes('Unauthorized'))
                     assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');

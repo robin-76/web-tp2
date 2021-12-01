@@ -208,7 +208,6 @@ describe('Get all the users', () => {
 });
 
 describe('Log out', () => {
-
     it('Returns the agent logged out', (done) => {
         request
             .post('/graphql')
