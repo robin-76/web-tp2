@@ -65,6 +65,9 @@ const ad2 = {
 }
 
 let cookie;
+let cookie2;
+let id;
+let id2;
 
 describe('Log in an agent to manipulate the ads', () => {
     const login = {
@@ -100,6 +103,8 @@ describe('createAd', () => {
             .end((err, res) => {
                 if (err)
                     return done(res, err);
+                id = res.body.data.createAd.id;
+                console.log(id);
                 assert.that(res.body.data.createAd.author).is.ofType('string');
                 assert.that(res.body.data.createAd.author).is.equalTo('Robin');
                 assert.that(res.body.data.createAd.title).is.ofType('string');
@@ -134,6 +139,7 @@ describe('createAd', () => {
             .end((err, res) => {
                 if (err)
                     return done(res, err);
+                id2 = res.body.data.createAd.id;
                 assert.that(res.body.data.createAd.author).is.ofType('string');
                 assert.that(res.body.data.createAd.author).is.equalTo('Maxence');
                 assert.that(res.body.data.createAd.title).is.ofType('string');
@@ -364,7 +370,117 @@ describe('Get all ad with a price filter', () => {
     })
 });
 
-let cookie2;
+describe('Get a specific ad with id', () => {
+    it('Returns the ad', (done) => {
+        request
+            .post('/graphql')
+            .send({query:`
+                query {
+                    getAd(id : "${id}") {
+                        author
+                        title
+                        type
+                        publicationStatus
+                        goodStatus
+                        description
+                        price
+                        firstDate
+                        secondDate
+                        photos
+                    }
+                }
+            `})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                assert.that(res.body.data.getAd.author).is.ofType('string');
+                assert.that(res.body.data.getAd.author).is.equalTo('Robin');
+                assert.that(res.body.data.getAd.title).is.ofType('string');
+                assert.that(res.body.data.getAd.title).is.equalTo('Ceci est une annonce');
+                assert.that(res.body.data.getAd.type).is.ofType('string');
+                assert.that(res.body.data.getAd.type).is.equalTo('Sell');
+                assert.that(res.body.data.getAd.publicationStatus).is.ofType('string');
+                assert.that(res.body.data.getAd.publicationStatus).is.equalTo('Published');
+                assert.that(res.body.data.getAd.goodStatus).is.ofType('string');
+                assert.that(res.body.data.getAd.goodStatus).is.equalTo('Rented');
+                assert.that(res.body.data.getAd.description).is.ofType('string');
+                assert.that(res.body.data.getAd.description).is.equalTo('Ceci est une description');
+                assert.that(res.body.data.getAd.price).is.ofType('number');
+                assert.that(res.body.data.getAd.price).is.equalTo(200);
+                assert.that(res.body.data.getAd.firstDate).is.ofType('string');
+                assert.that(res.body.data.getAd.firstDate).is.equalTo('2021-11-25T00:00:00.000Z');
+                assert.that(res.body.data.getAd.secondDate).is.ofType('string');
+                assert.that(res.body.data.getAd.secondDate).is.equalTo('2021-11-30T00:00:00.000Z');
+                assert.that(res.body.data.getAd.photos).is.ofType('array');
+                assert.that(res.body.data.getAd.photos[0]).is.equalTo('test_ad1.jpeg');
+                assert.that(res.body.data.getAd.photos[1]).is.equalTo('test_ad2.jpeg');
+                done();
+            })
+    })
+
+    it('Returns an ID error', (done) => {
+        request
+            .post('/graphql')
+            .send({query:`
+                query {
+                    getAd(id : "00a0a00000000a0a00aa00a0") {
+                        author
+                        title
+                        type
+                        publicationStatus
+                        goodStatus
+                        description
+                        price
+                        firstDate
+                        secondDate
+                        photos
+                    }
+                }
+            `})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
+                if(res.body.errors[0].message.includes("ObjectId"))
+                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
+                done();
+            })
+    })
+
+    it('Returns a cast to ObjetID error', (done) => {
+        request
+            .post('/graphql')
+            .send({query:`
+                query {
+                    getAd(id : "1234") {
+                        author
+                        title
+                        type
+                        publicationStatus
+                        goodStatus
+                        description
+                        price
+                        firstDate
+                        secondDate
+                        photos
+                    }
+                }
+            `})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
+                if(res.body.errors[0].message.includes("ObjectId"))
+                    assert.that(res.body.errors[0].message).is.startingWith("Cast to ObjectId failed for value");
+                done();
+            })
+    })
+});
 
 describe('Log out the agent', () => {
     const logout = {
