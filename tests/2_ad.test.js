@@ -3,21 +3,18 @@ const url = `http://localhost:4000`;
 const request = require('supertest')(url);
 const { assert } = require('assertthat');
 
+// Cookie for the agent
 let cookie;
+// Cookie for the user
 let cookie2;
+// Id of the first ad created
 let id;
 
 describe('Log in an agent to manipulate the ads', () => {
     it('Returns the agent logged', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    mutation {
-                        login(Username: "agent76", Password: "123abc")
-                    }
-                `
-            })
+            .send({query:`mutation {login(Username: "agent76", Password: "123abc")}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -34,36 +31,10 @@ describe('createAd', () => {
         request
             .post('/graphql')
             .set('cookie', cookie)
-            .send({
-                query: `
-                    mutation {
-                        createAd(AdInput: {
-                            author: "Robin", 
-                            title: "Ceci est une annonce", 
-                            type: Sell, 
-                            publicationStatus: Published, 
-                            goodStatus: Rented, 
-                            description: "Ceci est une description", 
-                            price: 200, 
-                            firstDate: "2021-11-25", 
-                            secondDate: "2021-11-30", 
-                            photos: ["test_ad1.jpeg", "test_ad2.jpeg"]
-                        }) {
-                            id
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                        }
-                    }
-                `
-            })
+            .send({query:`mutation { createAd(AdInput: { author: "Robin", title: "Ceci est une annonce", type: Sell, 
+                publicationStatus: Published, goodStatus: Rented, description: "Ceci est une description", price: 200, 
+                firstDate: "2021-11-25", secondDate: "2021-11-30", photos: ["test_ad1.jpeg", "test_ad2.jpeg"] }) { 
+                id author title type publicationStatus goodStatus description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -98,35 +69,10 @@ describe('createAd', () => {
         request
             .post('/graphql')
             .set('cookie', cookie)
-            .send({
-                query: `
-                    mutation {
-                        createAd(AdInput: {
-                            author: "Maxence", 
-                            title: "Deuxième annonce", 
-                            type: Location, 
-                            publicationStatus: Published, 
-                            goodStatus: Rented, 
-                            description: "Deuxième description", 
-                            price: 100, 
-                            firstDate: "2021-11-26", 
-                            secondDate: "2021-11-29", 
-                        }) {
-                            id
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                        }
-                    }
-                `
-            })
+            .send({query:`mutation { createAd(AdInput: { author: "Maxence", title: "Deuxième annonce", type: Location, 
+                publicationStatus: Published, goodStatus: Rented, description: "Deuxième description", price: 100, 
+                firstDate: "2021-11-26", secondDate: "2021-11-29" }) { id author title type publicationStatus goodStatus 
+                description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -156,36 +102,10 @@ describe('createAd', () => {
     it('Returns a login error', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    mutation {
-                        createAd(AdInput: {
-                            author: "Robin", 
-                            title: "Ceci est une annonce", 
-                            type: Sell, 
-                            publicationStatus: Published, 
-                            goodStatus: Rented, 
-                            description: "Ceci est une description", 
-                            price: 200, 
-                            firstDate: "2021-11-25", 
-                            secondDate: "2021-11-30", 
-                            photos: ["test_ad1.jpeg", "test_ad2.jpeg"]
-                        }) {
-                            id
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                        }
-                    }
-                `
-            })
+            .send({query:`mutation { createAd(AdInput: { author: "Robin", title: "Ceci est une annonce", type: Sell, 
+                publicationStatus: Published, goodStatus: Rented, description: "Ceci est une description", price: 200, 
+                firstDate: "2021-11-25", secondDate: "2021-11-30", photos: ["test_ad1.jpeg", "test_ad2.jpeg"] }) { 
+                id author title type publicationStatus goodStatus description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -206,35 +126,10 @@ describe('createAd', () => {
     it('Returns a validation error', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    mutation {
-                        createAd(AdInput: {
-                            author: "Robin", 
-                            type: Sell, 
-                            publicationStatus: Published, 
-                            goodStatus: Rented, 
-                            description: "Ceci est une description", 
-                            price: 200, 
-                            firstDate: "2021-11-25", 
-                            secondDate: "2021-11-30", 
-                            photos: ["test_ad1.jpeg", "test_ad2.jpeg"]
-                        }) {
-                            id
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                        }
-                    }
-                `
-            })
+            .send({query:`mutation { createAd(AdInput: { author: "Robin", type: Sell, publicationStatus: Published, 
+                goodStatus: Rented, description: "Ceci est une description", price: 200, firstDate: "2021-11-25", 
+                secondDate: "2021-11-30", photos: ["test_ad1.jpeg", "test_ad2.jpeg"] }) { id author title type
+                publicationStatus goodStatus description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -258,23 +153,8 @@ describe('createComment', () => {
         request
             .post('/graphql')
             .set('cookie', cookie)
-            .send({
-                query: `
-                    mutation {
-                        createComment(adId: "${id}", CommentInput: {
-                            author: "Robin", 
-                            text: "Commentaire ahah", 
-                            agent: true
-                        }) {
-                            id
-                            author
-                            text
-                            agent
-                            date
-                        }
-                    }
-                `
-            })
+            .send({query:` mutation { createComment(adId: "${id}", CommentInput: { author: "Robin", text: "Commentaire ahah", 
+                agent: true }) { id author text agent date }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -293,23 +173,8 @@ describe('createComment', () => {
     it('Returns a login error', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    mutation {
-                        createComment(adId: "${id}", CommentInput: {
-                            author: "Robin", 
-                            text: "Commentaire ahah", 
-                            agent: true
-                        }) {
-                            id
-                            author
-                            text
-                            agent
-                            date
-                        }
-                    }
-                `
-            })
+            .send({query:`mutation { createComment(adId: "${id}", CommentInput: { author: "Robin", text: "Commentaire ahah", 
+                agent: true }) { id author text agent date }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -326,26 +191,8 @@ describe('Get all the ads', () => {
     it('Returns all the ads', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    query {
-                        getAllAds {
-                            id
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                            comments
-                        }
-                    }
-                `
-            })
+            .send({query:`query { getAllAds { id author title type publicationStatus goodStatus description price
+                firstDate secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -399,29 +246,11 @@ describe('Get all the ads', () => {
 });
 
 describe('Get all ad with a price filter', () => {
-     it('Returns all the ad between the min and max of the price filter', (done) => {
+    it('Returns all the ad between the min and max of the price filter', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    query {
-                        getPriceFilterAds(min:50, max:150) {
-                            id
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                            comments
-                        }
-                    }        
-                `
-            })
+            .send({query:`query { getPriceFilterAds(min:50, max:150) { id author title type publicationStatus goodStatus
+                description price firstDate secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -456,24 +285,8 @@ describe('Get a specific ad with id', () => {
     it('Returns the ad', (done) => {
         request
             .post('/graphql')
-            .send({
-                query:`
-                    query {
-                        getAd(id : "${id}") {
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                        }
-                    }
-                `
-            })
+            .send({query:`query { getAd(id : "${id}") { author title type publicationStatus goodStatus description
+                price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -506,24 +319,8 @@ describe('Get a specific ad with id', () => {
     it('Returns an ID error', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    query {
-                        getAd(id : "00a0a00000000a0a00aa00a0") {
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                        }
-                    }
-                `
-            })
+            .send({query:`query { getAd(id : "00a0a00000000a0a00aa00a0") { author title type publicationStatus goodStatus 
+                description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -539,24 +336,8 @@ describe('Get a specific ad with id', () => {
     it('Returns a cast to ObjetID error', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    query {
-                        getAd(id : "1234") {
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                        }
-                    }
-                `
-            })
+            .send({query:`query { getAd(id : "1234") { author title type publicationStatus goodStatus description price 
+                firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -574,18 +355,7 @@ describe('Get a specific ad\'s comment(s) with id', () => {
     it('Returns the comment(s)', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    query {
-                        getComments(adId: "${id}") {
-                            author
-                            text
-                            agent
-                            date
-                        }
-                    }
-                `
-            })
+            .send({query:`query { getComments(adId: "${id}") { author text agent date }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -603,18 +373,7 @@ describe('Get a specific ad\'s comment(s) with id', () => {
     it('Returns an ID error', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    query {
-                        getComments(adId: "00a0a00000000a0a00aa00a0") {
-                            author
-                            text
-                            agent
-                            date
-                        }
-                    }
-                `
-            })
+            .send({query:`query { getComments(adId: "00a0a00000000a0a00aa00a0") { author text agent date }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -628,18 +387,7 @@ describe('Get a specific ad\'s comment(s) with id', () => {
     it('Returns a cast to objectID error', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    query {
-                        getComments(adId: "1234") {
-                            author
-                            text
-                            agent
-                            date
-                        }
-                    }
-                `
-            })
+            .send({query:`query { getComments(adId: "1234") { author text agent date }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -651,18 +399,51 @@ describe('Get a specific ad\'s comment(s) with id', () => {
     })
 });
 
+describe('Modify a specific ad with id', () => {
+    it('Returns the ad updated', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie)
+            .send({query:`mutation { updateAd(id: "${id}", AdInput: { title: "Updated ad", price: 9999 }) { id author 
+                title type publicationStatus goodStatus description price firstDate secondDate photos comments }}`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                assert.that(res.body.data.updateAd.title).is.ofType('string');
+                assert.that(res.body.data.updateAd.title).is.equalTo('Updated ad');
+                assert.that(res.body.data.updateAd.price).is.ofType('number');
+                assert.that(res.body.data.updateAd.price).is.equalTo(9999);
+                done();
+            })
+    })
+
+    it('Returns a login error', (done) => {
+        request
+            .post('/graphql')
+            .send({query:`mutation { updateAd(id: "${id}", AdInput: { title: "Updated ad v2", price: 1234 }) { id author 
+                title type publicationStatus goodStatus description price firstDate secondDate photos comments }}`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                // When the user is not an agent
+                if(res.body.errors[0].message.includes('Unauthorized'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
+                // When the user is not logged in
+                if(res.body.errors[0].message.includes('login'))
+                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                done();
+            })
+    })
+});
+
 describe('Log out the agent', () => {
     it('Returns the agent logged out', (done) => {
         request
             .post('/graphql')
             .set('cookie', cookie)
-            .send({
-                query: `
-                    mutation {
-                        logout
-                    }  
-                `
-            })
+            .send({query:`mutation { logout }`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -677,13 +458,7 @@ describe('Log in an user to manipulate the ads', () => {
     it('Returns the user logged', (done) => {
         request
             .post('/graphql')
-            .send({
-                query: `
-                    mutation {
-                        login(Username: "robin76", Password: "123abc")
-                    }
-                `
-            })
+            .send({query:`mutation { login(Username: "robin76", Password: "123abc") }`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -695,41 +470,15 @@ describe('Log in an user to manipulate the ads', () => {
     })
 });
 
-describe('createAd with an user', () => {
+describe('Try to create an ad with an user', () => {
     it('Returns an unauthorized error', (done) => {
         request
             .post('/graphql')
             .set('cookie', cookie2)
-            .send({
-                query: `
-                    mutation {
-                        createAd(AdInput: {
-                            author: "Robin", 
-                            title: "Ceci est une annonce", 
-                            type: Sell, 
-                            publicationStatus: Published, 
-                            goodStatus: Rented, 
-                            description: "Ceci est une description", 
-                            price: 200, 
-                            firstDate: "2021-11-25", 
-                            secondDate: "2021-11-30", 
-                            photos: ["test_ad1.jpeg", "test_ad2.jpeg"]
-                        }) {
-                            id
-                            author
-                            title
-                            type
-                            publicationStatus
-                            goodStatus
-                            description
-                            price
-                            firstDate
-                            secondDate
-                            photos
-                        }
-                    }
-                `
-            })
+            .send({query:`mutation { createAd(AdInput: { author: "Robin", title: "Ceci est une annonce", type: Sell, 
+                publicationStatus: Published, goodStatus: Rented, description: "Ceci est une description", price: 200, 
+                firstDate: "2021-11-25", secondDate: "2021-11-30", photos: ["test_ad1.jpeg", "test_ad2.jpeg"] }) {
+                id author title type publicationStatus goodStatus description price firstDate secondDate photos }}`})
             .expect(200)
             .end((err, res) => {
                 if (err)
@@ -743,6 +492,28 @@ describe('createAd with an user', () => {
                 // When the ad is not 100% correct
                 if(res.body.errors[0].message.includes('validation'))
                     assert.that(res.body.errors[0].message).is.startingWith('Ad validation failed:');
+                done();
+            })
+    })
+});
+
+describe('Try to modify an ad with an user', () => {
+    it('Returns an unauthorized error', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie2)
+            .send({query:`mutation { updateAd(id: "${id}", AdInput: { title: "Updated ad v2", price: 1234 }) { id author 
+                title type publicationStatus goodStatus description price firstDate secondDate photos comments }}`})
+            .expect(200)
+            .end((err, res) => {
+                if (err)
+                    return done(res, err);
+                // When the user is not an agent
+                if(res.body.errors[0].message.includes('Unauthorized'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Unauthorized !');
+                // When the user is not logged in
+                if(res.body.errors[0].message.includes('login'))
+                    assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
                 done();
             })
     })
