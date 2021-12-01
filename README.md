@@ -207,4 +207,4 @@ Delete an ad according to its id :
 
     mutation {
         deleteAd(id: "61a4d94589730c586fb727ec")
-    }                      
+    }                

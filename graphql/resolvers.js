@@ -25,7 +25,7 @@ const resolvers = {
     },
     getComments: async (args) => {
         const comments = await Comment.find({ad: args.adId});
-        if(!comments) throw new Error("Invalid ID !");
+        if(!comments.length) throw new Error("Invalid ID !");
         return comments;
     },
 

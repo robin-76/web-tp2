@@ -63,7 +63,22 @@ describe('createUser', () => {
             })
     })
 
-    it('Returns an already exists error', (done) => {
+    it('Returns an username already exists error', (done) => {
+        request
+            .post('/graphql')
+            .send({query:`mutation { createUser(UserInput: { username: "robin76", email: "robinguyomar@gmail.com", 
+                password: "123abc", agent: false }) { username email password agent date }}`})
+            .expect(200)
+            .end((err, res) => {
+                if(err)
+                    return done(res, err);
+                if(res.body.errors[0].message.includes('Username'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Username already exists');
+                done();
+            })
+    })
+
+    it('Returns an email already exists error', (done) => {
         request
             .post('/graphql')
             .send({query:`mutation { createUser(UserInput: { username: "robin", email: "robinguyomar@gmail.com", 
@@ -72,8 +87,6 @@ describe('createUser', () => {
             .end((err, res) => {
                 if(err)
                     return done(res, err);
-                if(res.body.errors[0].message.includes('Username'))
-                    assert.that(res.body.errors[0].message).is.equalTo('Username already exists');
                 if(res.body.errors[0].message.includes('Email'))
                     assert.that(res.body.errors[0].message).is.equalTo('Email already exists');
                 done();

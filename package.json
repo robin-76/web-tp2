@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "mocha tests/*.test.js"
+    "test": "nyc mocha --exit tests/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,8 @@
     "graphql-request": "^3.6.1",
     "graphql-scalars": "^1.13.6",
     "mongoose": "^6.0.13",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "nyc": "^15.1.0"
   },
   "devDependencies": {
     "graphql": "^16.0.1",

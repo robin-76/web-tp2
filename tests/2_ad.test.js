@@ -9,6 +9,8 @@ let cookie;
 let cookie2;
 // Id of the first ad created
 let id;
+// Id of the second ad created (without comments)
+let id2;
 
 describe('Log in an agent to manipulate the ads', () => {
     it('Returns the agent logged', (done) => {
@@ -77,6 +79,7 @@ describe('createAd', () => {
             .end((err, res) => {
                 if(err)
                     return done(res, err);
+                id2 = res.body.data.createAd.id;
                 assert.that(res.body.data.createAd.author).is.ofType('string');
                 assert.that(res.body.data.createAd.author).is.equalTo('Maxence');
                 assert.that(res.body.data.createAd.title).is.ofType('string');
@@ -170,6 +173,22 @@ describe('createComment', () => {
                 // When the user is not logged in
                 if(res.body.errors[0].message.includes('login'))
                     assert.that(res.body.errors[0].message).is.equalTo('You have to login first !');
+                done();
+            })
+    })
+
+    it('Returns an invalid ID error', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie)
+            .send({query:`mutation { createComment(adId: "00a0a00000000a0a00aa00a0", CommentInput: { author: "Robin", 
+                text: "Commentaire ahah", agent: true }) { id author text agent date }}`})
+            .expect(200)
+            .end((err, res) => {
+                if(err)
+                    return done(res, err);
+                if(res.body.errors[0].message.includes('Invalid'))
+                    assert.that(res.body.errors[0].message).is.equalTo('Invalid ID !');
                 done();
             })
     })
@@ -354,16 +373,16 @@ describe('Get a specific ad\'s comment(s) with id', () => {
             })
     })
 
-    it('Returns an ID error', (done) => {
+    it('Returns an invalide ID error', (done) => {
         request
             .post('/graphql')
-            .send({query:`query { getComments(adId: "00a0a00000000a0a00aa00a0") { author text agent date }}`})
+            .send({query:`query { getComments(adId: "${id2}") { author text agent date }}`})
             .expect(200)
             .end((err, res) => {
                 if(err)
                     return done(res, err);
-                if(res.body.data.getComments[0] === undefined)
-                    assert.that(res.body.data.getComments).is.empty();
+                if(res.body.errors[0].message.includes("Invalid"))
+                    assert.that(res.body.errors[0].message).is.equalTo("Invalid ID !");
                 done();
             })
     })
@@ -388,16 +407,70 @@ describe('Modify a specific ad with id', () => {
         request
             .post('/graphql')
             .set('cookie', cookie)
-            .send({query:`mutation { updateAd(id: "${id}", AdInput: { title: "Updated ad", price: 9999 }) { id author 
-                title type publicationStatus goodStatus description price firstDate secondDate photos comments }}`})
+            .send({query:`mutation { updateAd(id: "${id}", AdInput: { author: "Maxence", title: "Nouveau titre",
+                type: Location, publicationStatus: Unpublished, goodStatus: Available, description: "New text",
+                price: 1, firstDate: "2021-11-01", secondDate: "2021-11-02", photos: ["test.jpeg", "test2.jpeg"] }) { 
+                id author title type publicationStatus goodStatus description price firstDate secondDate photos comments }}`})
             .expect(200)
             .end((err, res) => {
                 if(err)
                     return done(res, err);
+                assert.that(res.body.data.updateAd.author).is.ofType('string');
+                assert.that(res.body.data.updateAd.author).is.equalTo('Maxence');
                 assert.that(res.body.data.updateAd.title).is.ofType('string');
-                assert.that(res.body.data.updateAd.title).is.equalTo('Updated ad');
+                assert.that(res.body.data.updateAd.title).is.equalTo('Nouveau titre');
+                assert.that(res.body.data.updateAd.type).is.ofType('string');
+                assert.that(res.body.data.updateAd.type).is.equalTo('Location');
+                assert.that(res.body.data.updateAd.publicationStatus).is.ofType('string');
+                assert.that(res.body.data.updateAd.publicationStatus).is.equalTo('Unpublished');
+                assert.that(res.body.data.updateAd.goodStatus).is.ofType('string');
+                assert.that(res.body.data.updateAd.goodStatus).is.equalTo('Available');
+                assert.that(res.body.data.updateAd.description).is.ofType('string');
+                assert.that(res.body.data.updateAd.description).is.equalTo('New text');
                 assert.that(res.body.data.updateAd.price).is.ofType('number');
-                assert.that(res.body.data.updateAd.price).is.equalTo(9999);
+                assert.that(res.body.data.updateAd.price).is.equalTo(1);
+                assert.that(res.body.data.updateAd.firstDate).is.ofType('string');
+                assert.that(res.body.data.updateAd.firstDate).is.equalTo('2021-11-01T00:00:00.000Z');
+                assert.that(res.body.data.updateAd.secondDate).is.ofType('string');
+                assert.that(res.body.data.updateAd.secondDate).is.equalTo('2021-11-02T00:00:00.000Z');
+                assert.that(res.body.data.updateAd.photos).is.ofType('array');
+                assert.that(res.body.data.updateAd.photos[0]).is.equalTo('test.jpeg');
+                assert.that(res.body.data.updateAd.photos[1]).is.equalTo('test2.jpeg');
+                done();
+            })
+    })
+
+    it('Fake to modify the ad to see if it keeps the same values', (done) => {
+        request
+            .post('/graphql')
+            .set('cookie', cookie)
+            .send({query:`mutation { updateAd(id: "${id}", AdInput: { }) { id author title type publicationStatus 
+                goodStatus description price firstDate secondDate photos comments }}`})
+            .expect(200)
+            .end((err, res) => {
+                if(err)
+                    return done(res, err);
+                assert.that(res.body.data.updateAd.author).is.ofType('string');
+                assert.that(res.body.data.updateAd.author).is.equalTo('Maxence');
+                assert.that(res.body.data.updateAd.title).is.ofType('string');
+                assert.that(res.body.data.updateAd.title).is.equalTo('Nouveau titre');
+                assert.that(res.body.data.updateAd.type).is.ofType('string');
+                assert.that(res.body.data.updateAd.type).is.equalTo('Location');
+                assert.that(res.body.data.updateAd.publicationStatus).is.ofType('string');
+                assert.that(res.body.data.updateAd.publicationStatus).is.equalTo('Unpublished');
+                assert.that(res.body.data.updateAd.goodStatus).is.ofType('string');
+                assert.that(res.body.data.updateAd.goodStatus).is.equalTo('Available');
+                assert.that(res.body.data.updateAd.description).is.ofType('string');
+                assert.that(res.body.data.updateAd.description).is.equalTo('New text');
+                assert.that(res.body.data.updateAd.price).is.ofType('number');
+                assert.that(res.body.data.updateAd.price).is.equalTo(1);
+                assert.that(res.body.data.updateAd.firstDate).is.ofType('string');
+                assert.that(res.body.data.updateAd.firstDate).is.equalTo('2021-11-01T00:00:00.000Z');
+                assert.that(res.body.data.updateAd.secondDate).is.ofType('string');
+                assert.that(res.body.data.updateAd.secondDate).is.equalTo('2021-11-02T00:00:00.000Z');
+                assert.that(res.body.data.updateAd.photos).is.ofType('array');
+                assert.that(res.body.data.updateAd.photos[0]).is.equalTo('test.jpeg');
+                assert.that(res.body.data.updateAd.photos[1]).is.equalTo('test2.jpeg');
                 done();
             })
     })
@@ -607,4 +680,3 @@ describe('Try to delete an ad with an user', () => {
             })
     })
 });
-
