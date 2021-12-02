@@ -34,7 +34,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Using GraphiQL as a query system for our real estate listings database.
 
-# Commands to launch the server
+## Commands to launch the server
 
 Installing the dependencies :
 
@@ -46,7 +46,13 @@ Launch the server :
 
 GraphQL Interface : http://localhost:4000/graphql
 
-# GraphQL Queries
+## Command to launch the tests
+
+    npm test
+
+This will display the coverage rate in the terminal and create a coverage folder where an index.html file will be available.
+
+# GraphQL : Queries & Mutations
 
 ## Users
 

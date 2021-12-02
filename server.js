@@ -21,29 +21,29 @@ mongoose.connect(config.MONGO_URI, { useNewUrlParser: true }, (err) => {
 });
 
 const store = new MongoDBStore({
-  uri: config.MONGO_URI,
-  collection: "sessions",
+    uri: config.MONGO_URI,
+    collection: "sessions",
 });
 
 app.use(
-  session({
-    secret: "secret",
-    resave: false,
-    saveUninitialized: false,
-    store: store
-  })
+    session({
+        secret: "secret",
+        resave: false,
+        saveUninitialized: false,
+        store: store
+    })
 );
 
 app.use("/graphql", graphqlHTTP( req => ({
-    schema,
-    rootValue: resolvers,
-    context: { session: req.session, auth },
-    graphiql: true
-  }))
+        schema,
+        rootValue: resolvers,
+        context: { session: req.session, auth },
+        graphiql: true
+    }))
 );
 
 const server = app.listen(process.env.PORT || 4000, () => {
-  console.log(`Now browse to localhost:${server.address().port}/graphql`);
+    console.log(`Now browse to localhost:${server.address().port}/graphql`);
 });
 
 module.exports = { app }

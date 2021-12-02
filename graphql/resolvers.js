@@ -10,13 +10,13 @@ const resolvers = {
     // Query
     getAllUsers: async (_args, context) => {
         context.auth(context);
-        return await User.find();
+        return User.find();
     },
     getAllAds: async () => {
-        return await Ad.find();
+        return Ad.find();
     },
     getPriceFilterAds: async (args) => {
-        return await Ad.find({price: { '$gte': args.min, '$lte': args.max}});
+        return Ad.find({price: {'$gte': args.min, '$lte': args.max}});
     },
     getAd: async (args) => {
         const ad = await Ad.findById(args.id);
