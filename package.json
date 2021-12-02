@@ -17,6 +17,7 @@
   "dependencies": {
     "assertthat": "^6.3.14",
     "bcryptjs": "^2.4.3",
+    "chai": "^4.3.4",
     "connect-mongodb-session": "^3.1.1",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
