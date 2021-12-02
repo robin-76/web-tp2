@@ -1,4 +1,4 @@
-# Express & GraphQL [![pipeline status](https://www-apps.univ-lehavre.fr/forge/gr161657/web-tp2/badges/master/pipeline.svg)](https://www-apps.univ-lehavre.fr/forge/gr161657/web-tp2/commits/master) [![coverage report](https://www-apps.univ-lehavre.fr/forge/gr161657/web-tp2/badges/master/coverage.svg)](https://www-apps.univ-lehavre.fr/forge/gr161657/web-tp2/commits/master)
+# Express & GraphQL
 
 - Année : M1 IWOCS
 - Matière: WEB
